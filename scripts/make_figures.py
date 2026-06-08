@@ -12,7 +12,6 @@ import numpy as np  # noqa: E402
 
 from easygrad import numeric, symbolic  # noqa: E402
 from easygrad.scalar_reverse import Value, topo_sort  # noqa: E402
-from easygrad.tracing import make_jaxpr, exp as texp  # noqa: E402
 
 ASSETS = pathlib.Path(__file__).resolve().parent.parent / "docs" / "assets"
 ASSETS.mkdir(parents=True, exist_ok=True)
