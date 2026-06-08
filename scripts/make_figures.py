@@ -202,44 +202,6 @@ def fig_vector_dag() -> bool:
     return _render_dag(loss, _topo(loss), label, "vector_dag")
 
 
-def fig_eager_vs_traced() -> None:
-    """Side-by-side: eager tape ops vs. the traced IR for the same function."""
-
-    def prog(x):
-        return texp(x * 2.0) + x
-
-    jaxpr = make_jaxpr(prog, 1)()
-
-    # eager side: list the ops as they would execute
-    eager_lines = [
-        "x            # leaf tensor",
-        "t0 = x * 2.0 # executes now, records grad_fn",
-        "t1 = exp(t0) # executes now, records grad_fn",
-        "y  = t1 + x  # executes now, records grad_fn",
-        "y.backward() # walk tape in reverse",
-    ]
-    traced_lines = str(jaxpr).splitlines()
-
-    fig, (axl, axr) = plt.subplots(1, 2, figsize=(9, 3.2))
-    for ax, title, lines in (
-        (axl, "PyTorch: eager define-by-run tape", eager_lines),
-        (axr, "JAX: staged IR (jaxpr) you transform", traced_lines),
-    ):
-        ax.axis("off")
-        ax.set_title(title, fontsize=10)
-        ax.text(
-            0.0,
-            0.95,
-            "\n".join(lines),
-            family="monospace",
-            fontsize=9,
-            va="top",
-            ha="left",
-            transform=ax.transAxes,
-        )
-    _save(fig, "eager_vs_traced.svg")
-
-
 def fig_mlp_training() -> None:
     """Capstone: train a 2-layer ReLU MLP to fit sin with plain gradient descent.
 
@@ -300,7 +262,6 @@ def main() -> None:
     fig_complex_step()
     fig_symbolic_swell()
     fig_dual_trace()
-    fig_eager_vs_traced()
     fig_mlp_training()
     has_dot = fig_scalar_dag()
     fig_vector_dag()
